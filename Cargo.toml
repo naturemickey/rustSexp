@@ -1,0 +1,4 @@
+[package]
+name = "rustSexp"
+version = "0.1.0"
+authors = ["zhouyou <mickey_zhouyou@yeah.net>"]
