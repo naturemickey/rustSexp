@@ -4,7 +4,7 @@ use std::option::Option::{None, Some};
 pub enum SNode {
 	// 0.标识， 1.字符串（不含双引号），后续有需要再加字段叶子类型
 	Leaf(i8, String),
-	Node(Box<Vec<SNode>>)
+	Node(Vec<SNode>)
 }
 
 pub fn parse(exp:&str) -> Vec<SNode> {
@@ -34,12 +34,16 @@ fn read_snodes(vc:&Vec<char>, idx:usize, deep:usize) -> (usize, usize, Vec<SNode
 ///
 fn read_snode(vc:&Vec<char>, idx:usize, deep:usize) -> Option<(usize, usize, SNode)> {
 	let idx = pass_blank(vc, idx);
-	if idx == vc.len() {
+	if idx == vc.len() || vc[idx] == ')' {
 		None
 	} else {
 		let c = vc[idx];
 		if c == '(' {
-			
+			let (idx, _, vn) = read_snodes(vc, idx + 1, deep + 1);
+			if vc[idx] != ')' {
+				panic!("expect ')' but find {}", vc[idx]);
+			}
+			Some((idx + 1, deep, SNode::Node(vn)))
 		} else {
 			let (i, n) = read_leaf(vc, idx);
 			Some((i, deep, n))
@@ -53,7 +57,7 @@ fn read_leaf(vc:&Vec<char>, idx:usize) -> (usize, SNode) {
 	if c == '"' {
 		let mut s:String = String::new();
 		let mut idx_to:usize = idx + 1;
-		while (idx_to < vc.len()) {
+		while idx_to < vc.len() {
 			if vc[idx_to] == '\\' {
 				if idx_to + 1 < vc.len() {
 					idx_to += 1;
@@ -75,7 +79,7 @@ fn read_leaf(vc:&Vec<char>, idx:usize) -> (usize, SNode) {
 	} else {
 		let mut s:String = String::new();
 		let mut idx_to:usize = idx + 1;
-		while (idx_to < vc.len()) {
+		while idx_to < vc.len() {
 			if vc[idx_to] == '\\' {
 				if idx_to + 1 < vc.len() {
 					idx_to += 1;
