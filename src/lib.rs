@@ -7,6 +7,12 @@ pub enum SNode {
 	Node(Vec<SNode>)
 }
 
+impl SNode {
+	fn equals(&self, n:&SNode) -> bool {
+		false
+	}
+}
+
 pub fn parse(exp:&str) -> Vec<SNode> {
 	let vc = exp.chars().collect();
 	let (_, _, res) = read_snodes(&vc, 0, 0);
