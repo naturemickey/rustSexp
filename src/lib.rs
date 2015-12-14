@@ -7,10 +7,20 @@ pub enum SNode {
 	Node(Vec<SNode>)
 }
 
-impl SNode {
-	fn equals(&self, n:&SNode) -> bool {
-		false
+use SNode::{Leaf, Node};
+use std::cmp::Eq;
+use std::cmp::PartialEq;
+
+impl PartialEq for SNode {
+	fn eq(&self, other:&SNode) -> bool {
+		true
 	}
+	fn ne(&self, other:&SNode) -> bool {
+		true
+	}
+}
+impl Eq for SNode {
+	
 }
 
 pub fn parse(exp:&str) -> Vec<SNode> {

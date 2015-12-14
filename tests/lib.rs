@@ -6,5 +6,5 @@ use rust_s_exp::parse;
 #[test]
 fn it_works() {
 	let s = "(abc)";
-	assert_eq!(parse(s), Node(vec![Leaf(0, "abc".to_string())]));
+	assert!(parse(s) == Node(vec![Leaf(0, "abc".to_string())]));
 }
