@@ -64,7 +64,7 @@ fn it_works5() {
 }
 #[test]
 fn it_works6() {
-	let s = "(\n\r\t\"\n\r\t\\t\\r\\n\")";
+	let s = "(\n\r\t\"\n\r\t\\t\\r\\n\"\t)";
 	let vn:Vec<SNode> = parse(s);
 	let n1:&SNode = &vn[0];
 	let n2:SNode = SNode::new_node(vec![SNode::new_leaf(1, "\n\r\t\t\r\n".to_string())]);
