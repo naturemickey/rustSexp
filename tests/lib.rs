@@ -11,7 +11,6 @@ fn it_works1() {
 	let n2:SNode = SNode::new_node(vec![SNode::new_leaf(0, "abc".to_string())]);
 	assert!(n1.equals(&n2));
 }
-
 #[test]
 fn it_works2() {
 	let s = "(\"abc\")";
@@ -20,7 +19,6 @@ fn it_works2() {
 	let n2:SNode = SNode::new_node(vec![SNode::new_leaf(1, "abc".to_string())]);
 	assert!(n1.equals(&n2));
 }
-
 #[test]
 fn it_works3() {
 	let s = "(abc \"def\")";
@@ -63,4 +61,12 @@ fn it_works5() {
 	for i in 0 .. vn.len() {
 		assert!(vn[i].equals(&vn2[i]));
 	}
+}
+#[test]
+fn it_works6() {
+	let s = "(\n\r\t\"\n\r\t\\t\\r\\n\")";
+	let vn:Vec<SNode> = parse(s);
+	let n1:&SNode = &vn[0];
+	let n2:SNode = SNode::new_node(vec![SNode::new_leaf(1, "\n\r\t\t\r\n".to_string())]);
+	assert!(n1.equals(&n2));
 }

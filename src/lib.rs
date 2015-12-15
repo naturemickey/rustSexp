@@ -118,7 +118,12 @@ fn read_leaf(vc:&Vec<char>, idx:usize) -> (usize, SNode) {
 			if vc[idx_to] == '\\' {
 				if idx_to + 1 < vc.len() {
 					idx_to += 1;
-					s.push(vc[idx_to]);
+					s.push(match vc[idx_to] {
+						'n' => '\n',
+						'r' => '\r',
+						't' => '\t',
+						x => x,
+					});
 				} else {
 					panic!("unexpect EOF");
 				}
