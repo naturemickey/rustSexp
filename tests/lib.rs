@@ -70,3 +70,26 @@ fn it_works6() {
 	let n2:SNode = SNode::new_node(vec![SNode::new_leaf(1, "\n\r\t\t\r\n".to_string())]);
 	assert!(n1.equals(&n2));
 }
+#[test]
+fn it_works7() {
+	// (@... "/*" (@* (@! "*/")) "*/")
+	let s = "(@... \"/*\" (@* (@! \"*/\")) \"*/\")";
+	let vn:Vec<SNode> = parse(s);
+	let n1:&SNode = &vn[0];
+	let n2:SNode = SNode::new_node(vec![
+		SNode::new_leaf(0, "@...".to_string()),
+		SNode::new_leaf(1, "/*".to_string()),
+		SNode::new_node(vec![
+			SNode::new_leaf(0, "@*".to_string()),
+			SNode::new_node(vec![
+				SNode::new_leaf(0, "@!".to_string()),
+				SNode::new_leaf(1, "*/".to_string()),
+			]),
+		]),
+		SNode::new_leaf(1, "*/".to_string()),
+	]);
+	println!("");
+	println!("{}", n1);
+	println!("{}", n2);
+	assert!(n1.equals(&n2));
+}

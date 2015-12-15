@@ -61,6 +61,12 @@ impl SNode {
 	}
 }
 
+impl std::fmt::Display for SNode {
+	fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+		write!(f, "{}", self.to_string())
+	}
+}
+
 pub fn parse(exp:&str) -> Vec<SNode> {
 	let vc = exp.chars().collect();
 	let (_, _, res) = read_snodes(&vc, 0, 0);
