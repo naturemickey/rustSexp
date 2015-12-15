@@ -1,26 +1,64 @@
 
 use std::option::Option::{None, Some};
 
-pub enum SNode {
-	// 0.标识， 1.字符串（不含双引号），后续有需要再加字段叶子类型
-	Leaf(i8, String),
-	Node(Vec<SNode>)
+pub struct SNode {
+	_type:i8, // 0.标识， 1.字符串（不含双引号），后续有需要再加字段叶子类型
+	token:String,
+	children:Vec<SNode>
 }
 
-use SNode::{Leaf, Node};
-use std::cmp::Eq;
-use std::cmp::PartialEq;
-
-impl PartialEq for SNode {
-	fn eq(&self, other:&SNode) -> bool {
-		true
+impl SNode {
+	pub fn new_leaf(_type:i8, token:String) -> SNode {
+		SNode{_type:_type, token:token, children:Vec::new()}
 	}
-	fn ne(&self, other:&SNode) -> bool {
-		true
+	pub fn new_node(children:Vec<SNode>) -> SNode {
+		SNode{_type:-1, token:"".to_string(), children:children}
 	}
-}
-impl Eq for SNode {
-	
+	pub fn is_leaf(&self) -> bool {
+		self._type != -1
+	}
+	pub fn equals(&self, other:&SNode) -> bool {
+		if self._type != other._type {
+			false
+		} else if self.token != other.token {
+			false
+		} else if self.children.len() != other.children.len() {
+			false
+		} else {
+			let len = self.children.len();
+			for i in 0 .. len {
+				if !self.children[i].equals(&other.children[i]) {
+					return false;
+				}
+			}
+			true
+		}
+	}
+	pub fn to_string(&self) -> String {
+		let mut res = String::new();
+		match self._type {
+			-1 => {
+				res.push('(');
+				for sn in &self.children {
+					res.push_str(&sn.to_string());
+					res.push(' ');
+				}
+				res.push(')');
+			},
+			0 => {
+				res.push_str(&self.token);
+			},
+			1 => {
+				res.push('"');
+				res.push_str(&self.token);
+				res.push('"');
+			}
+			_ => {
+				// do nothing.
+			}
+		}
+		res
+	}
 }
 
 pub fn parse(exp:&str) -> Vec<SNode> {
@@ -51,15 +89,18 @@ fn read_snodes(vc:&Vec<char>, idx:usize, deep:usize) -> (usize, usize, Vec<SNode
 fn read_snode(vc:&Vec<char>, idx:usize, deep:usize) -> Option<(usize, usize, SNode)> {
 	let idx = pass_blank(vc, idx);
 	if idx == vc.len() || vc[idx] == ')' {
+		// 破绽在这里
+		// None并没有办法返回idx和deep
 		None
 	} else {
 		let c = vc[idx];
 		if c == '(' {
 			let (idx, _, vn) = read_snodes(vc, idx + 1, deep + 1);
+			let idx = pass_blank(vc, idx); // 为了解决上面的破绽。
 			if vc[idx] != ')' {
-				panic!("expect ')' but find {}", vc[idx]);
+				panic!("expect ')' but find '{}'", vc[idx]);
 			}
-			Some((idx + 1, deep, SNode::Node(vn)))
+			Some((idx + 1, deep, SNode::new_node(vn)))
 		} else {
 			let (i, n) = read_leaf(vc, idx);
 			Some((i, deep, n))
@@ -91,10 +132,10 @@ fn read_leaf(vc:&Vec<char>, idx:usize) -> (usize, SNode) {
 		if idx_to == vc.len() {
 			panic!("expect '\"' but find EOF");
 		}
-		(idx_to + 1, SNode::Leaf(1, s))
+		(idx_to + 1, SNode::new_leaf(1, s))
 	} else {
 		let mut s:String = String::new();
-		let mut idx_to:usize = idx + 1;
+		let mut idx_to:usize = idx;
 		while idx_to < vc.len() {
 			if vc[idx_to] == '\\' {
 				if idx_to + 1 < vc.len() {
@@ -110,7 +151,7 @@ fn read_leaf(vc:&Vec<char>, idx:usize) -> (usize, SNode) {
 			}
 			idx_to += 1
 		}
-		(idx_to, SNode::Leaf(1, s))
+		(idx_to, SNode::new_leaf(0, s))
 	}
 }
 
