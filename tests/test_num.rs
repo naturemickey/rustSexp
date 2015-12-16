@@ -21,4 +21,5 @@ fn it_works_num() {
 	assert!(!is_number("-"));
 	assert!(!is_number("0a9"));
 	assert!(!is_number("abcde"));
+	assert!(!is_number("+abc"));
 }

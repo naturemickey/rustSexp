@@ -184,16 +184,16 @@ fn it_works9() {
 }
 #[test]
 fn it_works10() {
-	let s = "(+ 1 (* 2 3))";
+	let s = "(+ +1 (* -2. .3))";
 	let vn:Vec<SNode> = parse(s);
 	let n1:&SNode = &vn[0];
 	let n2:SNode = SNode::new_node(vec![
 		SNode::new_leaf(0, "+".to_string()),
-		SNode::new_leaf(0, "1".to_string()),
+		SNode::new_leaf(2, "+1".to_string()),
 		SNode::new_node(vec![
 			SNode::new_leaf(0, "*".to_string()),
-			SNode::new_leaf(0, "2".to_string()),
-			SNode::new_leaf(0, "3".to_string()),
+			SNode::new_leaf(2, "-2.".to_string()),
+			SNode::new_leaf(2, ".3".to_string()),
 		]),
 	]);
 	assert!(n1.equals(&n2));

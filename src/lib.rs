@@ -2,7 +2,11 @@
 use std::option::Option::{None, Some};
 
 pub struct SNode {
-	_type:i8, // 0.标识， 1.字符串（不含双引号），后续有需要再加字段叶子类型
+	// 0.标识
+	// 1.字符串（不含双引号)
+	// 2.数字
+	// 后续有需要再加字段叶子类型
+	_type:i8,
 	token:String,
 	children:Vec<SNode>
 }
@@ -145,7 +149,11 @@ fn read_an_id(vc:&Vec<char>, idx:usize) -> (usize, SNode) {
 		}
 		idx_to += 1
 	}
-	(idx_to, SNode::new_leaf(0, s))
+	if is_number(&s) {
+		(idx_to, SNode::new_leaf(2, s))
+	} else {
+		(idx_to, SNode::new_leaf(0, s))
+	}
 }
 
 fn read_an_string(vc:&Vec<char>, idx:usize) -> (usize, SNode) {
