@@ -39,9 +39,12 @@ impl SNode {
 		match self._type {
 			-1 => {
 				res.push('(');
-				for sn in &self.children {
-					res.push_str(&sn.to_string());
-					res.push(' ');
+				if self.children.len() > 0 {
+					for sn in &self.children {
+						res.push_str(&sn.to_string());
+						res.push(' ');
+					}
+					res.pop();
 				}
 				res.push(')');
 			},
