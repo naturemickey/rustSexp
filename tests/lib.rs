@@ -196,5 +196,9 @@ fn it_works10() {
 			SNode::new_leaf(2, ".3".to_string()),
 		]),
 	]);
+	println!("");
+	println!("{}", n1);
+	println!("{}", n2);
 	assert!(n1.equals(&n2));
+	assert!(n1.to_string() == n2.to_string());
 }

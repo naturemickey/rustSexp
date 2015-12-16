@@ -52,16 +52,13 @@ impl SNode {
 				}
 				res.push(')');
 			},
-			0 => {
-				res.push_str(&self.token);
-			},
 			1 => {
 				res.push('"');
 				res.push_str(&self.token);
 				res.push('"');
-			}
+			},
 			_ => {
-				// do nothing.
+				res.push_str(&self.token);
 			}
 		}
 		res
