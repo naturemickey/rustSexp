@@ -1,5 +1,7 @@
 extern crate rust_s_exp;
 
+mod test_num;
+
 use rust_s_exp::SNode;
 use rust_s_exp::parse;
 

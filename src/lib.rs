@@ -194,3 +194,63 @@ fn is_blank(c:char) -> bool {
 fn is_not_blank(c:char) -> bool {
 	!is_blank(c)
 }
+
+pub fn is_number(s:&str) -> bool {
+	// F : 2, 4, 5
+	// 0 --[+-]--> 1
+	// 0 --[0-9]-> 2
+	// 0 --[.]---> 3
+	// 1 --[0-9]-> 2
+	// 1 --[.]---> 3
+	// 2 --[.]---> 4
+	// 2 --[0-9]-> 2
+	// 3 --[0-9]-> 5
+	// 4 --[0-9]-> 5
+	// 5 --[0-9]-> 5
+	let mut state = 0;
+	for c in s.chars() {
+		state = match state {
+			0 => {
+				if is_sign(c) {
+					1
+				} else if is_dox_num(c) {
+					2
+				} else if c == '.' {
+					3
+				} else {
+					return false;
+				}
+			},
+			1 => {
+				if is_dox_num(c) {
+					2
+				} else if c == '.' {
+					3
+				} else {
+					return false;
+				}
+			},
+			2 => {
+				if is_dox_num(c) {
+					2
+				} else if c == '.' {
+					4
+				} else {
+					return false;
+				}
+			},
+			3 => if is_dox_num(c) { 5 } else { return false; },
+			4 => if is_dox_num(c) { 5 } else { return false; },
+			5 => if is_dox_num(c) { 5 } else { return false; },
+			_ => return false,
+		}
+	}
+	(state == 2 || state == 4 || state == 5)
+}
+
+fn is_sign(c:char) -> bool {
+	(c == '+' || c == '-')
+}
+fn is_dox_num(c:char) -> bool {
+	('0' <= c && c <= '9')
+}
