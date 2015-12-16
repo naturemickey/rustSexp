@@ -117,53 +117,61 @@ fn read_snode(vc:&Vec<char>, idx:usize, deep:usize) -> Option<(usize, usize, SNo
 fn read_leaf(vc:&Vec<char>, idx:usize) -> (usize, SNode) {
 	let c = vc[idx];
 
-	if c == '"' {
-		let mut s:String = String::new();
-		let mut idx_to:usize = idx + 1;
-		while idx_to < vc.len() {
-			if vc[idx_to] == '\\' {
-				if idx_to + 1 < vc.len() {
-					idx_to += 1;
-					s.push(match vc[idx_to] {
-						'n' => '\n',
-						'r' => '\r',
-						't' => '\t',
-						x => x,
-					});
-				} else {
-					panic!("unexpect EOF");
-				}
-			} else if vc[idx_to] != '"' {
+	let read_fn:fn(&Vec<char>, usize) -> (usize, SNode) = match c {
+		'"' => read_an_string,
+		_ => read_an_id,
+	};
+	read_fn(vc, idx)
+}
+
+fn read_an_id(vc:&Vec<char>, idx:usize) -> (usize, SNode) {
+	let mut s:String = String::new();
+	let mut idx_to:usize = idx;
+	while idx_to < vc.len() {
+		if vc[idx_to] == '\\' {
+			if idx_to + 1 < vc.len() {
+				idx_to += 1;
 				s.push(vc[idx_to]);
 			} else {
-				break;
+				panic!("unexpect EOF");
 			}
-			idx_to += 1;
+		} else if is_not_blank(vc[idx_to]) && vc[idx_to] != ')' {
+			s.push(vc[idx_to]);
+		} else {
+			break;
 		}
-		if idx_to == vc.len() {
-			panic!("expect '\"' but find EOF");
-		}
-		(idx_to + 1, SNode::new_leaf(1, s))
-	} else {
-		let mut s:String = String::new();
-		let mut idx_to:usize = idx;
-		while idx_to < vc.len() {
-			if vc[idx_to] == '\\' {
-				if idx_to + 1 < vc.len() {
-					idx_to += 1;
-					s.push(vc[idx_to]);
-				} else {
-					panic!("unexpect EOF");
-				}
-			} else if is_not_blank(vc[idx_to]) && vc[idx_to] != ')' {
-				s.push(vc[idx_to]);
-			} else {
-				break;
-			}
-			idx_to += 1
-		}
-		(idx_to, SNode::new_leaf(0, s))
+		idx_to += 1
 	}
+	(idx_to, SNode::new_leaf(0, s))
+}
+
+fn read_an_string(vc:&Vec<char>, idx:usize) -> (usize, SNode) {
+	let mut s:String = String::new();
+	let mut idx_to:usize = idx + 1;
+	while idx_to < vc.len() {
+		if vc[idx_to] == '\\' {
+			if idx_to + 1 < vc.len() {
+				idx_to += 1;
+				s.push(match vc[idx_to] {
+					'n' => '\n',
+					'r' => '\r',
+					't' => '\t',
+					x => x,
+				});
+			} else {
+				panic!("unexpect EOF");
+			}
+		} else if vc[idx_to] != '"' {
+			s.push(vc[idx_to]);
+		} else {
+			break;
+		}
+		idx_to += 1;
+	}
+	if idx_to == vc.len() {
+		panic!("expect '\"' but find EOF");
+	}
+	(idx_to + 1, SNode::new_leaf(1, s))
 }
 
 fn pass_blank(vc:&Vec<char>, idx:usize) -> usize {
