@@ -12,6 +12,7 @@ fn it_works1() {
 	let n1:&SNode = &vn[0];
 	let n2:SNode = SNode::new_node(vec![SNode::new_leaf(0, "abc".to_string())]);
 	assert!(n1.equals(&n2));
+	assert!(n1.to_string() == "(abc)");
 }
 #[test]
 fn it_works2() {
