@@ -24,7 +24,7 @@ fn it_works2() {
 }
 #[test]
 fn it_works3() {
-	let s = "(abc \"def\")";
+	let s = "(abc 'def')";
 	let vn:Vec<SNode> = parse(s);
 	let n1:&SNode = &vn[0];
 	let n2:SNode =
@@ -76,7 +76,7 @@ fn it_works6() {
 #[test]
 fn it_works7() {
 	// (@... "/*" (@* (@! "*/")) "*/")
-	let s = "(@... \"/*\" (@* (@! \"*/\")) \"*/\")";
+	let s = "(@... '/*' (@* (@! '*/')) '*/')";
 	let vn:Vec<SNode> = parse(s);
 	let n1:&SNode = &vn[0];
 	let n2:SNode = SNode::new_node(vec![

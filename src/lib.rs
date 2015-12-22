@@ -123,6 +123,7 @@ fn read_leaf(vc:&Vec<char>, idx:usize) -> (usize, SNode) {
 
 	let read_fn:fn(&Vec<char>, usize) -> (usize, SNode) = match c {
 		'"' => read_an_string,
+		'\'' => read_an_string,
 		_ => read_an_id,
 	};
 	read_fn(vc, idx)
@@ -156,6 +157,7 @@ fn read_an_id(vc:&Vec<char>, idx:usize) -> (usize, SNode) {
 fn read_an_string(vc:&Vec<char>, idx:usize) -> (usize, SNode) {
 	let mut s:String = String::new();
 	let mut idx_to:usize = idx + 1;
+    let cp = vc[idx];
 	while idx_to < vc.len() {
 		if vc[idx_to] == '\\' {
 			if idx_to + 1 < vc.len() {
@@ -169,7 +171,7 @@ fn read_an_string(vc:&Vec<char>, idx:usize) -> (usize, SNode) {
 			} else {
 				panic!("unexpect EOF");
 			}
-		} else if vc[idx_to] != '"' {
+		} else if vc[idx_to] != cp {
 			s.push(vc[idx_to]);
 		} else {
 			break;
