@@ -15,6 +15,18 @@ fn it_works1() {
 	assert!(n1.to_string() == "(abc)");
 }
 #[test]
+fn test_bool() {
+	let s = "(abc true false)";
+	let vn:Vec<SNode> = parse(s);
+	let n1:&SNode = &vn[0];
+	let n2:SNode = SNode::new_node(vec![
+        SNode::new_leaf(0, "abc".to_string()),
+        SNode::new_leaf(3, "".to_string()),
+        SNode::new_leaf(4, "".to_string()),
+    ]);
+	assert!(n1.equals(&n2));
+}
+#[test]
 fn it_works2() {
 	let s = "(\"abc\")";
 	let vn:Vec<SNode> = parse(s);

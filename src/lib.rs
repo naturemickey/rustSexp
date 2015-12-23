@@ -5,6 +5,8 @@ pub struct SNode {
 	// 0.标识
 	// 1.字符串（不含双引号)
 	// 2.数字
+	// 3.true
+    // 4.false
 	// 后续有需要再加字段叶子类型
 	_type:i8,
 	token:String,
@@ -22,7 +24,11 @@ impl SNode {
 		self._type != -1
 	}
 	pub fn equals(&self, other:&SNode) -> bool {
-		if self._type != other._type {
+        if self._type == 3 && other._type == 3{
+            true
+        } else if self._type == 4 && other._type == 4 {
+            true
+        } else if self._type != other._type {
 			false
 		} else if self.token != other.token {
 			false
@@ -149,9 +155,19 @@ fn read_an_id(vc:&Vec<char>, idx:usize) -> (usize, SNode) {
 	}
 	if is_number(&s) {
 		(idx_to, SNode::new_leaf(2, s))
-	} else {
+	} else if is_bool(&s) {
+        if s == "true" {
+            (idx_to, SNode::new_leaf(3, s))
+        } else {
+            (idx_to, SNode::new_leaf(4, s))
+        }
+    } else {
 		(idx_to, SNode::new_leaf(0, s))
 	}
+}
+
+fn is_bool(s:&str) -> bool {
+    (s == "true") || (s == "false")
 }
 
 fn read_an_string(vc:&Vec<char>, idx:usize) -> (usize, SNode) {
