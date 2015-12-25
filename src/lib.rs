@@ -8,9 +8,9 @@ pub struct SNode {
 	// 3.true
     // 4.false
 	// 后续有需要再加字段叶子类型
-	_type:i8,
-	token:String,
-	children:Vec<SNode>
+	pub _type:i8,
+	pub token:String,
+	pub children:Vec<SNode>
 }
 
 impl SNode {
